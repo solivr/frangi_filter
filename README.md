@@ -1,5 +1,5 @@
 # frangi_filter
-Compute the likeliness of an image region to contain vessels or other image ridges , according to the method described by Frangi et al :
+Compute the likeliness of an image region to contain vessels or other image ridges , according to the method described by Frangi et al. :
 
 Frangi, Alejandro F., et al. "Multiscale vessel enhancement filtering." International Conference on Medical Image Computing and Computer-Assisted Intervention. Springer Berlin Heidelberg, 1998.
 
