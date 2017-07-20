@@ -125,11 +125,11 @@ def FrangiFilter2D(I, FrangiScaleRange=np.array([1, 10]), FrangiScaleRatio=2,
         outIm = np.amax(ALLfiltered, axis=2)
         outIm = outIm.reshape(I.shape[0], I.shape[1], order='F')
         whatScale = np.argmax(ALLfiltered, axis=2)
-        whatScale = np.reshape(whatScale, I.shape)
+        whatScale = np.reshape(whatScale, I.shape, order='F')
 
-        indices = range(I.size) + (whatScale.flatten() - 1)*I.size
+        indices = range(I.size) + (whatScale.flatten(order='F') - 1)*I.size
         values = np.take(ALLangles.flatten(order='F'), indices)
-        direction = np.reshape(values, I.shape).transpose()
+        direction = np.reshape(values, I.shape, order='F')
     else:
         outIm = ALLfiltered.reshape(I.shape[0], I.shape[1], order='F')
         whatScale = np.ones(I.shape)
