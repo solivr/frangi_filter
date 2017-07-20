@@ -129,7 +129,7 @@ def FrangiFilter2D(I, FrangiScaleRange=np.array([1, 10]), FrangiScaleRatio=2,
 
         indices = range(I.size) + (whatScale.flatten() - 1)*I.size
         values = np.take(ALLangles.flatten(order='F'), indices)
-        direction = np.reshape(values, I.shape)
+        direction = np.reshape(values, I.shape).transpose()
     else:
         outIm = ALLfiltered.reshape(I.shape[0], I.shape[1], order='F')
         whatScale = np.ones(I.shape)
