@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+__author__ = 'solivr'
+
 import numpy as np
-from scipy.ndimage.filters import convolve
-from hessian import Hessian2D
+from .hessian import Hessian2D
+
 
 def eig2image(Dxx, Dxy, Dyy):
     """
@@ -77,21 +80,21 @@ def FrangiFilter2D(I, FrangiScaleRange=np.array([1, 10]), FrangiScaleRatio=2,
     ALLangles = np.zeros([I.shape[0], I.shape[1], len(sigmas)])
 
     # Frangi filter for all sigmas
-    for i in range(0, len(sigmas)):
+    for i in range(len(sigmas)):
         # Show progress
         if verbose:
             print('Current Frangi Filter Sigma: ', str(sigmas[i]))
 
         # Make 2D hessian
-        Dxx, Dxy, Dyy = Hessian2D(I, sigmas[i]);
+        Dxx, Dxy, Dyy = Hessian2D(I, sigmas[i])
 
         # Correct for scale
-        Dxx = (sigmas[i]**2)*Dxx
-        Dxy = (sigmas[i]**2)*Dxy
-        Dyy = (sigmas[i]**2)*Dyy
+        Dxx *= (sigmas[i]**2)
+        Dxy *= (sigmas[i]**2)
+        Dyy *= (sigmas[i]**2)
 
         # Calculate (abs sorted) eigenvalues and vectors
-        Lambda2, Lambda1, Ix, Iy= eig2image(Dxx, Dxy, Dyy)
+        Lambda2, Lambda1, Ix, Iy = eig2image(Dxx, Dxy, Dyy)
 
         # Compute the direction of the minor eigenvector
         angles = np.arctan2(Ix, Iy)
@@ -121,7 +124,15 @@ def FrangiFilter2D(I, FrangiScaleRange=np.array([1, 10]), FrangiScaleRatio=2,
     if len(sigmas) > 1:
         outIm = np.amax(ALLfiltered, axis=2)
         outIm = outIm.reshape(I.shape[0], I.shape[1], order='F')
+        whatScale = np.argmax(ALLfiltered, axis=2)
+        whatScale = np.reshape(whatScale, I.shape)
+
+        indices = range(I.size) + (whatScale.flatten() - 1)*I.size
+        values = np.take(ALLangles.flatten(order='F'), indices)
+        direction = np.reshape(values, I.shape)
     else:
         outIm = ALLfiltered.reshape(I.shape[0], I.shape[1], order='F')
+        whatScale = np.ones(I.shape)
+        direction = np.reshape(ALLangles, I.shape, order='F')
 
-    return outIm
+    return outIm, whatScale, direction
