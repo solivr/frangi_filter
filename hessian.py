@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+__author__ = 'solivr'
+
+import numpy as np
+from scipy.ndimage.filters import convolve
 
 
 def Hessian2D(I, Sigma=1):
